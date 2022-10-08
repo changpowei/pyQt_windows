@@ -10,6 +10,7 @@ import time
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
+import os
 
 
 class News_scrawler(QThread):
@@ -21,7 +22,10 @@ class News_scrawler(QThread):
         self.data = data    #檔案名稱
         self.docx_save_loc = docx_save_loc  #本文儲存位置
 
-        self.garbage_content = ['圖:', '資料照', '@', '圖/', '圖為', '取自',
+        if not os.path.isdir(self.docx_save_loc):
+            os.mkdir(self.docx_save_loc)
+
+        self.garbage_content = ['圖:', '資料照', '@', '▲', '圖/', '圖為', '取自',
                            '新頭殼newtalk', 'https',
                            '(臉書)', '(美聯社)', '(示意圖)', '(推特)',
                            '(左)', '(右)',
@@ -165,13 +169,15 @@ class News_scrawler(QThread):
                         document.add_paragraph(line)
 
                     document.add_page_break()
+
+                    print("\r", end="")
+                    print("Crawl progress: {}%: ".format(int(num * 100 / questions)),
+                          "▋" * (int(num * 100 / questions) // 2), end="")
+                    sys.stdout.flush()
+                    self.sinOut.emit("Progress: {}%".format(int(num * 100 / questions)))
                 else:
                     document.add_heading(line, level=1)
 
-            print("\r",end="")
-            print("Crawl progress: {}%: ".format(int(num * 100 / questions)),"▋" * (int(num * 100 / questions) // 2),end="")
-            sys.stdout.flush()
-            self.sinOut.emit("Progress: {}%".format(int(num * 100 / questions)))
 
         document.save(save_path)
 

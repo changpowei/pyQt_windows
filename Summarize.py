@@ -10,15 +10,20 @@ import urllib
 import ssl
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-import sys
+import os
 
 class Summarizer(QThread):
     sinOut = pyqtSignal(str)  # 自定義訊號，執行run()函式時，從相關執行緒發射此訊號
     def __init__(self, data, load_path, save_path):
         super(Summarizer, self).__init__()
+
+        if not os.path.isdir(save_path):
+            os.mkdir(save_path)
+
         self.data = data
         self.load_path = load_path + self.data + '_本文.docx'
         self.save_path = save_path + self.data + '_摘要.docx'
+
     def TW2S(self, article):
         # 繁體轉簡體
         cc = OpenCC('tw2s')

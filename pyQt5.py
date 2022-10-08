@@ -23,8 +23,8 @@ class MyWidget(QWidget):
 
     def initUI(self):
         self.setWindowTitle('馬董早')
-        self.setGeometry(50, 50, 400, 400)
-        self.setFixedSize(400, 400)
+        self.setGeometry(50, 50, 800, 800)
+        self.setFixedSize(800, 800)
 
         layout = QGridLayout()
         self.setLayout(layout)
@@ -47,13 +47,13 @@ class MyWidget(QWidget):
         self.content_folder_label.setStyleSheet("color:gray")
         self.content_folder_label.setFont(QFont('Arial', 12))
         self.content_folder_label.setStyleSheet("background-color: Gainsboro")
-        self.content_folder_label.setFixedWidth(100)
+        self.content_folder_label.setFixedWidth(200)
 
         self.abstract_folder_label = QLabel(self.abstract_save_location, self)
         self.abstract_folder_label.setStyleSheet("color:gray")
         self.abstract_folder_label.setFont(QFont('Arial', 12))
         self.abstract_folder_label.setStyleSheet("background-color: Gainsboro")
-        self.abstract_folder_label.setFixedWidth(100)
+        self.abstract_folder_label.setFixedWidth(200)
 
         self.output_file = QLabel('檔名：', self)
         self.output_file.setFont(QFont('Arial', 12))
@@ -91,23 +91,34 @@ class MyWidget(QWidget):
         self.AllLayout(layout)
 
     def ContentButtonClick(self):
+
         folderPath = QtWidgets.QFileDialog.getExistingDirectory()  # 選取特定資料夾
-        self.content_save_location = folderPath + '/'
-        folder_split = folderPath.split('/')
-        new_folder = '.../' + folder_split[-2] + '/' + folder_split[-1] + '/'
-        self.content_folder_label.setText(new_folder)
-        print(self.content_save_location)
+        if folderPath == '':
+            pass
+        else:
+            self.content_save_location = folderPath + '/'
+            folder_split = folderPath.split('/')
+            new_folder = '.../' + folder_split[-2] + '/' + folder_split[-1] + '/'
+            self.content_folder_label.setText(new_folder)
+            print(self.content_save_location)
 
     def AbstractButtonClick(self):
+
         folderPath = QtWidgets.QFileDialog.getExistingDirectory()  # 選取特定資料夾
-        self.abstract_save_location = folderPath + '/'
-        folder_split = folderPath.split('/')
-        new_folder = '.../' + folder_split[-2] + '/' + folder_split[-1] + '/'
-        self.abstract_folder_label.setText(new_folder)
-        print(self.abstract_save_location)
+        if folderPath == '':
+            pass
+        else:
+            self.abstract_save_location = folderPath + '/'
+            folder_split = folderPath.split('/')
+            new_folder = '.../' + folder_split[-2] + '/' + folder_split[-1] + '/'
+            self.abstract_folder_label.setText(new_folder)
+            print(self.abstract_save_location)
 
     def scratchButtonClick(self):
-        if self.crawler_btn.isEnabled and self.abstract_btn.isEnabled:
+        if self.abstract_btn.isEnabled() == False:
+            QMessageBox.warning(None, '警告', '文章摘要執行中...')
+
+        elif self.crawler_btn.isEnabled():
             if self.text_input.toPlainText() != "":
                 self.crawler_btn.setDisabled(True)
                 self.file_save_name = self.file_name.text()
@@ -120,7 +131,9 @@ class MyWidget(QWidget):
                 self.show_info("請於左方欄位輸入欲進行文章抓取的內容！")
 
     def abstractButtonClick(self):
-        if self.abstract_btn.isEnabled and self.crawler_btn.isEnabled:
+        if self.crawler_btn.isEnabled() == False:
+            QMessageBox.warning(None, '警告', '本文擷取中...')
+        elif self.abstract_btn.isEnabled():
             if exists(self.content_save_location + self.file_save_name + '_本文.docx'):
                 self.abstract_btn.setDisabled(True)
 
