@@ -113,7 +113,7 @@ class Summarizer(QThread):
 
     def Transfering(self, summarized_content, one_article):
 
-        summarized_content.add_paragraph(self.Summarizing_free(one_article))
+        summarized_content.add_paragraph(self.Summarizing_paid(one_article))
         summarized_content.add_paragraph()
         summarized_content.add_page_break()
 
